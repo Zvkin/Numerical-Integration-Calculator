@@ -390,7 +390,114 @@ class ChartWindow(tk.Toplevel):
         FigureCanvasTkAgg(fig, master=self).get_tk_widget().pack(fill="both", expand=True)
         FigureCanvasTkAgg(fig, master=self).draw()
 
+class AboutWindow(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.title("About / Help")
+        self.geometry("520x500")
+        self.configure(bg="#FFFFFF")
+        self.grab_set()
 
+        # ── Scrollable Canvas ─────────────────────────
+        canvas = tk.Canvas(self, bg="#FFFFFF", highlightthickness=0)
+        scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        scroll_frame = tk.Frame(canvas, bg="#FFFFFF")
+
+        scroll_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # ── Content Container ─────────────────────────
+        container = tk.Frame(scroll_frame, bg="#FFFFFF", padx=20, pady=20)
+        container.pack(fill="both", expand=True)
+
+        # Title
+        tk.Label(container,
+                 text="Numerical Integration Calculator",
+                 font=("Segoe UI", 15, "bold"),
+                 bg="#FFFFFF", fg="#1C1C2E").pack(anchor="w", pady=(0,10))
+
+        # Version
+        tk.Label(container,
+                 text="Version: 1.0 (Midterm)",
+                 font=("Segoe UI", 10),
+                 bg="#FFFFFF", fg="#555577").pack(anchor="w", pady=(0,10))
+
+        # Description
+        tk.Label(container,
+                 text="This application computes definite integrals using "
+                      "numerical methods and provides step-by-step solutions "
+                      "and accuracy verification.",
+                 wraplength=460,
+                 justify="left",
+                 font=("Segoe UI", 10),
+                 bg="#FFFFFF", fg="#333344").pack(anchor="w", pady=(0,15))
+
+        # Features
+        tk.Label(container, text="Features:",
+                 font=("Segoe UI", 11, "bold"),
+                 bg="#FFFFFF").pack(anchor="w")
+
+        features = [
+            "Trapezoidal Rule",
+            "Simpson’s 1/3 Rule",
+            "Simpson’s 3/8 Rule",
+            "Midpoint Rule",
+            "Solution Trail (step-by-step)",
+            "Graph Visualization",
+            "Accuracy Verification (SciPy, SymPy)"
+        ]
+
+        for f in features:
+            tk.Label(container, text=f"• {f}",
+                     font=("Segoe UI", 10),
+                     bg="#FFFFFF", fg="#444466").pack(anchor="w")
+
+        # Members
+        tk.Label(container, text="\nDeveloped by:",
+                 font=("Segoe UI", 11, "bold"),
+                 bg="#FFFFFF").pack(anchor="w")
+
+        tk.Label(container,
+                 text="• Gabriel Estrella\n• Daniel Christian Mendoza\n• Paul Rosal",
+                 justify="left",
+                 font=("Segoe UI", 10),
+                 bg="#FFFFFF").pack(anchor="w")
+
+        # How to Use
+        tk.Label(container, text="\nHow to Use:",
+                 font=("Segoe UI", 11, "bold"),
+                 bg="#FFFFFF").pack(anchor="w")
+
+        tk.Label(container,
+                 text="1. Enter a function (e.g., sin(x), x**2)\n"
+                      "2. Set lower and upper bounds\n"
+                      "3. Enter number of intervals\n"
+                      "4. Click Calculate\n"
+                      "5. View solution or plot",
+                 justify="left",
+                 wraplength=460,
+                 font=("Segoe UI", 10),
+                 bg="#FFFFFF").pack(anchor="w")
+
+        # Close button
+        tk.Button(container, text="Close",
+                  bg="#5B5BD6", fg="white",
+                  font=("Segoe UI", 10, "bold"),
+                  relief="flat",
+                  command=self.destroy).pack(pady=15)
+
+        # ── Mouse Scroll Support ───────────────────────
+        canvas.bind_all("<MouseWheel>",
+            lambda e: canvas.yview_scroll(-1 * int(e.delta / 120), "units"))
+        s
 # ── Main App ──────────────────────────────────────────────────────
 class App(tk.Tk):
     def __init__(self):
@@ -417,6 +524,16 @@ class App(tk.Tk):
                  bg=BG, fg=TEXT, font=("Segoe UI",17,"bold")).pack(anchor="w")
         tk.Label(tf, text="Calculate definite integrals with multiple methods",
                  bg=BG, fg=DIM, font=("Segoe UI",9)).pack(anchor="w")
+        
+        tk.Button(top,
+          text="About / Help",
+          bg="#EEEEF8",
+          fg="#5B5BD6",
+          font=("Segoe UI", 9, "bold"),
+          relief="flat",
+          cursor="hand2",
+          command=lambda: AboutWindow(self)
+          ).pack(side="right", padx=10)
 
         # ── Two columns ───────────────────────────────────
         body = tk.Frame(self, bg=BG)
