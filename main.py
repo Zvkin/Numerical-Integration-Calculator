@@ -1,6 +1,6 @@
 
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 import math
 import traceback
 import numpy as np
@@ -87,36 +87,52 @@ def make_trail_trap(raw, expr, a, b, n, result):
     int_sum = sum(ys[1:-1])
     weighted = ys[0] + 2*int_sum + ys[-1]
 
+    SEP  = ("sep", "=" * 60)
+    DASH = ("sep", "-" * 60)
+
     L = []
-    L.append(("h", "TRAPEZOIDAL RULE - SOLUTION TRAIL"))
+    L.append(SEP)
+    L.append(("h", "  TRAPEZOIDAL RULE  —  SOLUTION TRAIL"))
+    L.append(SEP)
     L.append(("", ""))
-    L.append(("s", "GIVEN"))
-    L.append(("b", f"  f(x) = {raw}"))
-    L.append(("b", f"  a = {a},  b = {b},  n = {n}"))
+    L.append(("s", "  GIVEN"))
+    L.append(DASH)
+    L.append(("b", f"    f(x)  =  {raw}"))
+    L.append(("b", f"    a     =  {a}"))
+    L.append(("b", f"    b     =  {b}"))
+    L.append(("b", f"    n     =  {n}  (number of subintervals)"))
     L.append(("", ""))
-    L.append(("s", "STEP 1 - Interval width h"))
-    L.append(("b", f"  h = (b - a) / n  =  ({b} - {a}) / {n}"))
-    L.append(("r", f"  h = {h:.8f}"))
+    L.append(("s", "  STEP 1  —  Subinterval width  h"))
+    L.append(DASH)
+    L.append(("b", f"    h  =  (b - a) / n"))
+    L.append(("b", f"       =  ({b} - {a}) / {n}"))
+    L.append(("r", f"       =  {h:.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 2 - Formula"))
-    L.append(("b", "  Integral ~ (h/2) x [f(x0) + 2f(x1) + ... + 2f(xn-1) + f(xn)]"))
-    L.append(("b", "  Endpoint coefficients = 1,  Interior = 2"))
+    L.append(("s", "  STEP 2  —  Trapezoidal formula"))
+    L.append(DASH)
+    L.append(("b", "    Integral ≈ (h/2) × [f(x₀) + 2f(x₁) + ··· + 2f(xₙ₋₁) + f(xₙ)]"))
+    L.append(("b", "    Endpoint coefficients = 1   |   Interior coefficients = 2"))
     L.append(("", ""))
-    L.append(("s", "STEP 3 - Function evaluations"))
-    L.append(("b", f"  f(x0) = f({a}) = {ys[0]:.8f}   [coeff=1]"))
+    L.append(("s", "  STEP 3  —  Function evaluations"))
+    L.append(DASH)
+    L.append(("b", f"    f(x₀) = f({a})        =  {ys[0]:.8f}    [coeff = 1]"))
     for i in range(1, min(n, 8)+1):
-        L.append(("b", f"  f(x{i}) = f({xs[i]:.5f}) = {ys[i]:.8f}   [coeff=2]"))
+        L.append(("b", f"    f(x{i}) = f({xs[i]:.5f})  =  {ys[i]:.8f}    [coeff = 2]"))
     if n > 8:
-        L.append(("d", f"  ... {n-8} more interior points ..."))
-    L.append(("b", f"  f(x{n}) = f({b}) = {ys[-1]:.8f}   [coeff=1]"))
+        L.append(("d", f"    ···  {n-8} more interior points  ···"))
+    L.append(("b", f"    f(x{n}) = f({b})        =  {ys[-1]:.8f}    [coeff = 1]"))
     L.append(("", ""))
-    L.append(("s", "STEP 4 - Weighted sum"))
-    L.append(("b", f"  Sum = {ys[0]:.8f} + 2 x {int_sum:.8f} + {ys[-1]:.8f}"))
-    L.append(("r", f"  Sum = {weighted:.8f}"))
+    L.append(("s", "  STEP 4  —  Weighted sum"))
+    L.append(DASH)
+    L.append(("b", f"    Sum  =  f(x₀) + 2×Σf(xᵢ) + f(xₙ)"))
+    L.append(("b", f"         =  {ys[0]:.8f} + 2 × {int_sum:.8f} + {ys[-1]:.8f}"))
+    L.append(("r", f"         =  {weighted:.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 5 - Multiply by h/2"))
-    L.append(("b", f"  Result = (h/2) x Sum  =  ({h:.6f}/2) x {weighted:.6f}"))
-    L.append(("r", f"  Result = {result:.10f}"))
+    L.append(("s", "  STEP 5  —  Multiply by h/2"))
+    L.append(DASH)
+    L.append(("b", f"    Result  =  (h/2) × Sum"))
+    L.append(("b", f"            =  ({h:.6f} / 2) × {weighted:.6f}"))
+    L.append(("r", f"            =  {result:.10f}"))
     L.append(("", ""))
     _append_verify(L, trap, expr, raw, a, b, n, result)
     return L
@@ -130,35 +146,52 @@ def make_trail_s13(raw, expr, a, b, n, result):
     coeffs = [1] + [4 if i%2 else 2 for i in range(1, n)] + [1]
     weighted = sum(c*y for c,y in zip(coeffs, ys))
 
+    SEP  = ("sep", "=" * 60)
+    DASH = ("sep", "-" * 60)
+
     L = []
-    L.append(("h", "SIMPSON'S 1/3 RULE - SOLUTION TRAIL"))
+    L.append(SEP)
+    L.append(("h", "  SIMPSON'S 1/3 RULE  —  SOLUTION TRAIL"))
+    L.append(SEP)
     L.append(("", ""))
-    L.append(("s", "GIVEN"))
-    L.append(("b", f"  f(x) = {raw}"))
-    L.append(("b", f"  a = {a},  b = {b},  n = {n}  (must be even)"))
+    L.append(("s", "  GIVEN"))
+    L.append(DASH)
+    L.append(("b", f"    f(x)  =  {raw}"))
+    L.append(("b", f"    a     =  {a}"))
+    L.append(("b", f"    b     =  {b}"))
+    L.append(("b", f"    n     =  {n}  (must be even)"))
     L.append(("", ""))
-    L.append(("s", "STEP 1 - Verify n is even"))
-    L.append(("b", f"  n = {n}  -> {'OK (even)' if n%2==0 else 'adjusted'}"))
+    L.append(("s", "  STEP 1  —  Verify n is even"))
+    L.append(DASH)
+    L.append(("b", f"    n = {n}  →  {'✓ OK (even)' if n%2==0 else '⚠ adjusted to next even'}"))
     L.append(("", ""))
-    L.append(("s", "STEP 2 - Interval width h"))
-    L.append(("r", f"  h = ({b} - {a}) / {n} = {h:.8f}"))
+    L.append(("s", "  STEP 2  —  Subinterval width  h"))
+    L.append(DASH)
+    L.append(("b", f"    h  =  (b - a) / n"))
+    L.append(("b", f"       =  ({b} - {a}) / {n}"))
+    L.append(("r", f"       =  {h:.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 3 - Formula"))
-    L.append(("b", "  Integral ~ (h/3) x [f(x0) + 4f(x1) + 2f(x2) + 4f(x3) + ... + f(xn)]"))
-    L.append(("b", "  Pattern: 1, 4, 2, 4, 2, ..., 4, 1"))
+    L.append(("s", "  STEP 3  —  Simpson's 1/3 formula"))
+    L.append(DASH)
+    L.append(("b", "    Integral ≈ (h/3) × [f(x₀) + 4f(x₁) + 2f(x₂) + 4f(x₃) + ··· + f(xₙ)]"))
+    L.append(("b", "    Coefficient pattern:  1, 4, 2, 4, 2, ···, 4, 1"))
     L.append(("", ""))
-    L.append(("s", "STEP 4 - Evaluations with coefficients"))
+    L.append(("s", "  STEP 4  —  Evaluations with coefficients"))
+    L.append(DASH)
     for i in range(min(n+1, 9)):
-        L.append(("b", f"  f(x{i}) = f({xs[i]:.5f}) = {ys[i]:.8f}   [coeff={coeffs[i]}]"))
+        L.append(("b", f"    f(x{i}) = f({xs[i]:.5f})  =  {ys[i]:.8f}    [coeff = {coeffs[i]}]"))
     if n+1 > 9:
-        L.append(("d", f"  ... {n+1-9} more points ..."))
+        L.append(("d", f"    ···  {n+1-9} more points  ···"))
     L.append(("", ""))
-    L.append(("s", "STEP 5 - Weighted sum"))
-    L.append(("r", f"  Weighted sum = {weighted:.8f}"))
+    L.append(("s", "  STEP 5  —  Weighted sum"))
+    L.append(DASH)
+    L.append(("r", f"    Weighted sum  =  {weighted:.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 6 - Multiply by h/3"))
-    L.append(("b", f"  Result = (h/3) x {weighted:.6f}  =  ({h:.6f}/3) x {weighted:.6f}"))
-    L.append(("r", f"  Result = {result:.10f}"))
+    L.append(("s", "  STEP 6  —  Multiply by h/3"))
+    L.append(DASH)
+    L.append(("b", f"    Result  =  (h/3) × Weighted sum"))
+    L.append(("b", f"            =  ({h:.6f} / 3) × {weighted:.6f}"))
+    L.append(("r", f"            =  {result:.10f}"))
     L.append(("", ""))
     _append_verify(L, s13, expr, raw, a, b, n, result)
     return L
@@ -169,32 +202,48 @@ def make_trail_mid(raw, expr, a, b, n, result):
     mids = [a + (i+0.5)*h for i in range(n)]
     ys   = [f(m) for m in mids]
 
+    SEP  = ("sep", "=" * 60)
+    DASH = ("sep", "-" * 60)
+
     L = []
-    L.append(("h", "MIDPOINT RULE - SOLUTION TRAIL"))
+    L.append(SEP)
+    L.append(("h", "  MIDPOINT RULE  —  SOLUTION TRAIL"))
+    L.append(SEP)
     L.append(("", ""))
-    L.append(("s", "GIVEN"))
-    L.append(("b", f"  f(x) = {raw}"))
-    L.append(("b", f"  a = {a},  b = {b},  n = {n}"))
+    L.append(("s", "  GIVEN"))
+    L.append(DASH)
+    L.append(("b", f"    f(x)  =  {raw}"))
+    L.append(("b", f"    a     =  {a}"))
+    L.append(("b", f"    b     =  {b}"))
+    L.append(("b", f"    n     =  {n}  (number of subintervals)"))
     L.append(("", ""))
-    L.append(("s", "STEP 1 - Interval width h"))
-    L.append(("r", f"  h = ({b} - {a}) / {n} = {h:.8f}"))
+    L.append(("s", "  STEP 1  —  Subinterval width  h"))
+    L.append(DASH)
+    L.append(("b", f"    h  =  (b - a) / n"))
+    L.append(("b", f"       =  ({b} - {a}) / {n}"))
+    L.append(("r", f"       =  {h:.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 2 - Formula"))
-    L.append(("b", "  Integral ~ h x SUM of f(midpoints)"))
-    L.append(("b", "  Midpoint of interval i = a + (i + 0.5) x h"))
+    L.append(("s", "  STEP 2  —  Midpoint formula"))
+    L.append(DASH)
+    L.append(("b", "    Integral ≈ h × Σ f(midpoints)"))
+    L.append(("b", "    Midpoint of interval i  =  a + (i + 0.5) × h"))
     L.append(("", ""))
-    L.append(("s", "STEP 3 - Midpoint evaluations"))
+    L.append(("s", "  STEP 3  —  Midpoint evaluations"))
+    L.append(DASH)
     for i in range(min(n, 8)):
-        L.append(("b", f"  Interval {i}: mid={mids[i]:.6f}  f={ys[i]:.8f}"))
+        L.append(("b", f"    Interval {i:>2}:  mid = {mids[i]:.6f}   f = {ys[i]:.8f}"))
     if n > 8:
-        L.append(("d", f"  ... {n-8} more intervals ..."))
+        L.append(("d", f"    ···  {n-8} more intervals  ···"))
     L.append(("", ""))
-    L.append(("s", "STEP 4 - Sum"))
-    L.append(("r", f"  SUM = {sum(ys):.8f}"))
+    L.append(("s", "  STEP 4  —  Sum of f(midpoints)"))
+    L.append(DASH)
+    L.append(("r", f"    Σ f(midpoints)  =  {sum(ys):.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 5 - Multiply by h"))
-    L.append(("b", f"  Result = {h:.8f} x {sum(ys):.8f}"))
-    L.append(("r", f"  Result = {result:.10f}"))
+    L.append(("s", "  STEP 5  —  Multiply by h"))
+    L.append(DASH)
+    L.append(("b", f"    Result  =  h × Σ f(midpoints)"))
+    L.append(("b", f"            =  {h:.8f} × {sum(ys):.8f}"))
+    L.append(("r", f"            =  {result:.10f}"))
     L.append(("", ""))
     _append_verify(L, mid, expr, raw, a, b, n, result)
     return L
@@ -208,30 +257,45 @@ def make_trail_s38(raw, expr, a, b, n, result):
     coeffs = [1] + [3 if i%3 else 2 for i in range(1, n)] + [1]
     weighted = sum(c*y for c,y in zip(coeffs, ys))
 
+    SEP  = ("sep", "=" * 60)
+    DASH = ("sep", "-" * 60)
+
     L = []
-    L.append(("h", "SIMPSON'S 3/8 RULE - SOLUTION TRAIL"))
+    L.append(SEP)
+    L.append(("h", "  SIMPSON'S 3/8 RULE  —  SOLUTION TRAIL"))
+    L.append(SEP)
     L.append(("", ""))
-    L.append(("s", "GIVEN"))
-    L.append(("b", f"  f(x) = {raw}"))
-    L.append(("b", f"  a = {a},  b = {b},  n = {n}  (multiple of 3)"))
+    L.append(("s", "  GIVEN"))
+    L.append(DASH)
+    L.append(("b", f"    f(x)  =  {raw}"))
+    L.append(("b", f"    a     =  {a}"))
+    L.append(("b", f"    b     =  {b}"))
+    L.append(("b", f"    n     =  {n}  (must be multiple of 3)"))
     L.append(("", ""))
-    L.append(("s", "STEP 1 - Interval width h"))
-    L.append(("r", f"  h = ({b} - {a}) / {n} = {h:.8f}"))
+    L.append(("s", "  STEP 1  —  Subinterval width  h"))
+    L.append(DASH)
+    L.append(("b", f"    h  =  (b - a) / n"))
+    L.append(("b", f"       =  ({b} - {a}) / {n}"))
+    L.append(("r", f"       =  {h:.8f}"))
     L.append(("", ""))
-    L.append(("s", "STEP 2 - Formula"))
-    L.append(("b", "  Integral ~ (3h/8) x [f(x0)+3f(x1)+3f(x2)+2f(x3)+...+f(xn)]"))
-    L.append(("b", "  Pattern: 1, 3, 3, 2, 3, 3, 2, ..., 1"))
+    L.append(("s", "  STEP 2  —  Simpson's 3/8 formula"))
+    L.append(DASH)
+    L.append(("b", "    Integral ≈ (3h/8) × [f(x₀)+3f(x₁)+3f(x₂)+2f(x₃)+···+f(xₙ)]"))
+    L.append(("b", "    Coefficient pattern:  1, 3, 3, 2, 3, 3, 2, ···, 1"))
     L.append(("", ""))
-    L.append(("s", "STEP 3 - Evaluations with coefficients"))
+    L.append(("s", "  STEP 3  —  Evaluations with coefficients"))
+    L.append(DASH)
     for i in range(min(n+1, 9)):
-        L.append(("b", f"  f(x{i}) = f({xs[i]:.5f}) = {ys[i]:.8f}   [coeff={coeffs[i]}]"))
+        L.append(("b", f"    f(x{i}) = f({xs[i]:.5f})  =  {ys[i]:.8f}    [coeff = {coeffs[i]}]"))
     if n+1 > 9:
-        L.append(("d", f"  ... {n+1-9} more points ..."))
+        L.append(("d", f"    ···  {n+1-9} more points  ···"))
     L.append(("", ""))
-    L.append(("s", "STEP 4 - Result"))
-    L.append(("b", f"  Weighted sum = {weighted:.8f}"))
-    L.append(("b", f"  Result = (3 x {h:.6f} / 8) x {weighted:.6f}"))
-    L.append(("r", f"  Result = {result:.10f}"))
+    L.append(("s", "  STEP 4  —  Result"))
+    L.append(DASH)
+    L.append(("b", f"    Weighted sum  =  {weighted:.8f}"))
+    L.append(("b", f"    Result  =  (3 × h / 8) × Weighted sum"))
+    L.append(("b", f"            =  (3 × {h:.6f} / 8) × {weighted:.6f}"))
+    L.append(("r", f"            =  {result:.10f}"))
     L.append(("", ""))
     _append_verify(L, s38, expr, raw, a, b, n, result)
     return L
@@ -243,19 +307,25 @@ def _append_verify(L, fn, expr, raw, a, b, n, result):
     abs_err = abs(result - ref)
     rich_err = abs(result - r2)
 
-    L.append(("sep", "-" * 52))
-    L.append(("v",   "VERIFICATION & ACCURACY AUDIT"))
+    SEP  = ("sep", "=" * 60)
+    DASH = ("sep", "-" * 60)
+
+    L.append(SEP)
+    L.append(("v",   "  VERIFICATION & ACCURACY AUDIT"))
+    L.append(SEP)
     L.append(("", ""))
-    L.append(("b",   "  [1] Richardson Extrapolation:"))
-    L.append(("b",   f"      n={n}: {result:.10f}"))
-    L.append(("b",   f"      n={n*2}: {r2:.10f}"))
-    L.append(("b",   f"      Estimated error = {rich_err:.4e}"))
+    L.append(("s",   "  [1]  Richardson Extrapolation"))
+    L.append(DASH)
+    L.append(("b",   f"    n = {n}    →   {result:.10f}"))
+    L.append(("b",   f"    n = {n*2}  →   {r2:.10f}"))
+    L.append(("b",   f"    Estimated error  =  {rich_err:.4e}"))
     L.append(("", ""))
-    L.append(("b",   "  [2] SciPy adaptive quadrature:"))
-    L.append(("b",   f"      Reference = {ref:.10f}"))
-    L.append(("b",   f"      Absolute error = {abs_err:.4e}"))
+    L.append(("s",   "  [2]  SciPy adaptive quadrature"))
+    L.append(DASH)
+    L.append(("b",   f"    Reference value  =  {ref:.10f}"))
+    L.append(("b",   f"    Absolute error   =  {abs_err:.4e}"))
     rel = abs_err/abs(ref)*100 if ref != 0 else 0
-    L.append(("b",   f"      Relative error = {rel:.6f}%"))
+    L.append(("b",   f"    Relative error   =  {rel:.6f} %"))
     L.append(("", ""))
 
     try:
@@ -263,23 +333,27 @@ def _append_verify(L, fn, expr, raw, a, b, n, result):
         ex = sp.sympify(raw.replace("^","**"))
         ai = sp.integrate(ex, x)
         exact = float(ai.subs(x, b) - ai.subs(x, a))
-        L.append(("b", "  [3] SymPy exact symbolic:"))
-        L.append(("b", f"      Antiderivative = {ai}"))
-        L.append(("b", f"      Exact value    = {exact:.10f}"))
-        L.append(("b", f"      Error vs exact = {abs(result-exact):.4e}"))
+        L.append(("s",  "  [3]  SymPy exact symbolic"))
+        L.append(DASH)
+        L.append(("b",  f"    Antiderivative   =  {ai}"))
+        L.append(("b",  f"    Exact value      =  {exact:.10f}"))
+        L.append(("b",  f"    Error vs exact   =  {abs(result-exact):.4e}"))
         L.append(("", ""))
     except Exception:
         pass
 
     ok = abs_err < 1e-4
+    L.append(SEP)
     L.append(("ok" if ok else "warn",
-               "  RESULT: HIGH ACCURACY" if ok else "  RESULT: CONSIDER INCREASING n"))
+               "  ✓  RESULT: HIGH ACCURACY" if ok else "  ⚠  RESULT: CONSIDER INCREASING n"))
+    L.append(SEP)
     L.append(("", ""))
-    L.append(("sep", "-" * 52))
-    L.append(("h",   "SUMMARY"))
-    L.append(("r",   f"  Integral from {a} to {b} of ({raw}) dx"))
-    L.append(("r",   f"  = {result:.10f}"))
-    L.append(("b",   f"  Error ~ {abs_err:.4e}"))
+    L.append(("h",   "  SUMMARY"))
+    L.append(DASH)
+    L.append(("r",   f"    ∫ ({raw}) dx   from {a} to {b}"))
+    L.append(("r",   f"    ≈  {result:.10f}"))
+    L.append(("b",   f"    Error estimate  ~  {abs_err:.4e}"))
+    L.append(("", ""))
 
 TRAIL_BUILDERS = {
     "Trapezoidal Rule":   make_trail_trap,
@@ -347,6 +421,81 @@ class TrailWindow(tk.Toplevel):
             txt.insert("end", text + "\n", tag)
         txt.config(state="disabled")
 
+        self._lines = lines
+        tool_frame = tk.Frame(self, bg=color)
+        tool_frame.pack(fill="x", padx=12, pady=6)
+        tk.Label(tool_frame, text="Export trace as TXT or HTML for documentation/verification",
+                 bg=color, fg="#CCCCEE", font=("Segoe UI",8)).pack(side="left")
+        tk.Button(tool_frame, text="Export Report",
+                  bg="white", fg=color,
+                  font=("Segoe UI",9,"bold"), relief="solid",
+                  bd=1, cursor="hand2",
+                  padx=10, pady=4,
+                  command=self._export).pack(side="right")
+
+    def _export(self):
+        filepath = filedialog.asksaveasfilename(
+            parent=self,
+            title="Export Solution Trail",
+            defaultextension=".txt",
+            filetypes=[("Text Files", "*.txt"), ("HTML Files", "*.html"), ("All Files", "*.*")])
+        if not filepath:
+            return
+
+        try:
+            if filepath.lower().endswith(".html"):
+                content = self._report_html()
+            else:
+                content = self._report_text()
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(content)
+            messagebox.showinfo("Export Complete",
+                                f"Solution trail exported to:\n{filepath}")
+        except Exception as ex:
+            messagebox.showerror("Export Failed", str(ex))
+
+    def _report_text(self):
+        return "\n".join(text for _, text in self._lines).strip() + "\n"
+
+    def _report_html(self):
+        html_lines = [
+            "<!DOCTYPE html>",
+            "<html>",
+            "<head>",
+            "  <meta charset='utf-8' />",
+            f"  <title>Solution Trail - {self.title()}</title>",
+            "  <style>",
+            "    body { font-family: Segoe UI, sans-serif; background: #FAFAFA; color: #1C1C2E; padding: 24px; }",
+            "    h1, h2, h3 { margin: 0 0 12px 0; }",
+            "    div { margin: 4px 0; white-space: pre-wrap; }",
+            "    hr { border: 0; border-top: 1px solid #DDD; margin: 16px 0; }",
+            "  </style>",
+            "</head>",
+            "<body>",
+            f"<h1>{self.title()}</h1>",
+        ]
+        for tag, text in self._lines:
+            safe = (text.replace("&", "&amp;")
+                        .replace("<", "&lt;")
+                        .replace(">", "&gt;"))
+            if tag == "h":
+                html_lines.append(f"<h2>{safe}</h2>")
+            elif tag == "s":
+                html_lines.append(f"<h3>{safe}</h3>")
+            elif tag == "sep":
+                html_lines.append("<hr />")
+            elif tag == "r":
+                html_lines.append(f"<div><strong>{safe}</strong></div>")
+            elif tag == "ok":
+                html_lines.append(f"<div style='color: #2B7A0B;'><strong>{safe}</strong></div>")
+            elif tag == "warn":
+                html_lines.append(f"<div style='color: #C75C00;'><strong>{safe}</strong></div>")
+            else:
+                html_lines.append(f"<div>{safe}</div>")
+        html_lines.append("</body>")
+        html_lines.append("</html>")
+        return "\n".join(html_lines)
+
 
 # ── Chart Window ──────────────────────────────────────────────────
 class ChartWindow(tk.Toplevel):
@@ -390,114 +539,7 @@ class ChartWindow(tk.Toplevel):
         FigureCanvasTkAgg(fig, master=self).get_tk_widget().pack(fill="both", expand=True)
         FigureCanvasTkAgg(fig, master=self).draw()
 
-class AboutWindow(tk.Toplevel):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.title("About / Help")
-        self.geometry("520x500")
-        self.configure(bg="#FFFFFF")
-        self.grab_set()
 
-        # ── Scrollable Canvas ─────────────────────────
-        canvas = tk.Canvas(self, bg="#FFFFFF", highlightthickness=0)
-        scrollbar = tk.Scrollbar(self, orient="vertical", command=canvas.yview)
-        scroll_frame = tk.Frame(canvas, bg="#FFFFFF")
-
-        scroll_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-
-        canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # ── Content Container ─────────────────────────
-        container = tk.Frame(scroll_frame, bg="#FFFFFF", padx=20, pady=20)
-        container.pack(fill="both", expand=True)
-
-        # Title
-        tk.Label(container,
-                 text="Numerical Integration Calculator",
-                 font=("Segoe UI", 15, "bold"),
-                 bg="#FFFFFF", fg="#1C1C2E").pack(anchor="w", pady=(0,10))
-
-        # Version
-        tk.Label(container,
-                 text="Version: 1.0 (Midterm)",
-                 font=("Segoe UI", 10),
-                 bg="#FFFFFF", fg="#555577").pack(anchor="w", pady=(0,10))
-
-        # Description
-        tk.Label(container,
-                 text="This application computes definite integrals using "
-                      "numerical methods and provides step-by-step solutions "
-                      "and accuracy verification.",
-                 wraplength=460,
-                 justify="left",
-                 font=("Segoe UI", 10),
-                 bg="#FFFFFF", fg="#333344").pack(anchor="w", pady=(0,15))
-
-        # Features
-        tk.Label(container, text="Features:",
-                 font=("Segoe UI", 11, "bold"),
-                 bg="#FFFFFF").pack(anchor="w")
-
-        features = [
-            "Trapezoidal Rule",
-            "Simpson’s 1/3 Rule",
-            "Simpson’s 3/8 Rule",
-            "Midpoint Rule",
-            "Solution Trail (step-by-step)",
-            "Graph Visualization",
-            "Accuracy Verification (SciPy, SymPy)"
-        ]
-
-        for f in features:
-            tk.Label(container, text=f"• {f}",
-                     font=("Segoe UI", 10),
-                     bg="#FFFFFF", fg="#444466").pack(anchor="w")
-
-        # Members
-        tk.Label(container, text="\nDeveloped by:",
-                 font=("Segoe UI", 11, "bold"),
-                 bg="#FFFFFF").pack(anchor="w")
-
-        tk.Label(container,
-                 text="• Gabriel Estrella\n• Daniel Christian Mendoza\n• Paul Rosal",
-                 justify="left",
-                 font=("Segoe UI", 10),
-                 bg="#FFFFFF").pack(anchor="w")
-
-        # How to Use
-        tk.Label(container, text="\nHow to Use:",
-                 font=("Segoe UI", 11, "bold"),
-                 bg="#FFFFFF").pack(anchor="w")
-
-        tk.Label(container,
-                 text="1. Enter a function (e.g., sin(x), x**2)\n"
-                      "2. Set lower and upper bounds\n"
-                      "3. Enter number of intervals\n"
-                      "4. Click Calculate\n"
-                      "5. View solution or plot",
-                 justify="left",
-                 wraplength=460,
-                 font=("Segoe UI", 10),
-                 bg="#FFFFFF").pack(anchor="w")
-
-        # Close button
-        tk.Button(container, text="Close",
-                  bg="#5B5BD6", fg="white",
-                  font=("Segoe UI", 10, "bold"),
-                  relief="flat",
-                  command=self.destroy).pack(pady=15)
-
-        # ── Mouse Scroll Support ───────────────────────
-        canvas.bind_all("<MouseWheel>",
-            lambda e: canvas.yview_scroll(-1 * int(e.delta / 120), "units"))
-        s
 # ── Main App ──────────────────────────────────────────────────────
 class App(tk.Tk):
     def __init__(self):
@@ -524,16 +566,6 @@ class App(tk.Tk):
                  bg=BG, fg=TEXT, font=("Segoe UI",17,"bold")).pack(anchor="w")
         tk.Label(tf, text="Calculate definite integrals with multiple methods",
                  bg=BG, fg=DIM, font=("Segoe UI",9)).pack(anchor="w")
-        
-        tk.Button(top,
-          text="About / Help",
-          bg="#EEEEF8",
-          fg="#5B5BD6",
-          font=("Segoe UI", 9, "bold"),
-          relief="flat",
-          cursor="hand2",
-          command=lambda: AboutWindow(self)
-          ).pack(side="right", padx=10)
 
         # ── Two columns ───────────────────────────────────
         body = tk.Frame(self, bg=BG)
@@ -576,31 +608,36 @@ class App(tk.Tk):
         card.pack(fill="x", pady=10, padx=2)
         self._hdr(card, "Setup")
 
-        tk.Label(card, text="Function f(x)", bg=PANEL, fg=DIM,
-                 font=("Segoe UI",9)).pack(anchor="w", padx=14, pady=10)
+        # ── Function f(x) ──────────────────────────────────
+        tk.Label(card, text="Function  f(x)", bg=PANEL, fg=DIM,
+                 font=("Segoe UI",9,"bold")).pack(anchor="w", padx=14, pady=(14,2))
         self.v_func = tk.StringVar(value="exp(x)")
-        self._ent(card, self.v_func).pack(fill="x", padx=14)
+        self._ent(card, self.v_func).pack(fill="x", padx=14, pady=(0,10))
 
+        # ── Bounds row (Lower a / Upper b) ─────────────────
         row = tk.Frame(card, bg=PANEL)
-        row.pack(fill="x", padx=14, pady=8)
+        row.pack(fill="x", padx=14, pady=(0,0))
         row.columnconfigure(0, weight=1); row.columnconfigure(1, weight=1)
-        tk.Label(row, text="Lower (a)", bg=PANEL, fg=DIM,
-                 font=("Segoe UI",9)).grid(row=0,column=0,sticky="w")
-        tk.Label(row, text="Upper (b)", bg=PANEL, fg=DIM,
-                 font=("Segoe UI",9)).grid(row=0,column=1,sticky="w",padx=6)
+        tk.Label(row, text="Lower bound  (a)", bg=PANEL, fg=DIM,
+                 font=("Segoe UI",9,"bold")).grid(row=0, column=0, sticky="w", pady=(0,2))
+        tk.Label(row, text="Upper bound  (b)", bg=PANEL, fg=DIM,
+                 font=("Segoe UI",9,"bold")).grid(row=0, column=1, sticky="w", padx=(8,0), pady=(0,2))
         self.v_a = tk.StringVar(value="0")
         self.v_b = tk.StringVar(value="2")
-        self._ent(row, self.v_a).grid(row=1,column=0,sticky="ew")
-        self._ent(row, self.v_b).grid(row=1,column=1,sticky="ew",padx=6)
+        self._ent(row, self.v_a).grid(row=1, column=0, sticky="ew", pady=(0,10))
+        self._ent(row, self.v_b).grid(row=1, column=1, sticky="ew", padx=(8,0), pady=(0,10))
 
-        tk.Label(card, text="Intervals (n)", bg=PANEL, fg=DIM,
-                 font=("Segoe UI",9)).pack(anchor="w", padx=14, pady=8)
+        # ── Intervals n ────────────────────────────────────
+        tk.Label(card, text="Intervals  (n)", bg=PANEL, fg=DIM,
+                 font=("Segoe UI",9,"bold")).pack(anchor="w", padx=14, pady=(0,2))
         self.v_n = tk.StringVar(value="100")
         self._ent(card, self.v_n).pack(fill="x", padx=14)
-        tk.Label(card, text="Higher values = more accuracy",
+        tk.Label(card, text="Tip: higher n → greater accuracy",
                  bg=PANEL, fg="#AAAACC", font=("Segoe UI",8)
-                 ).pack(anchor="w", padx=14, pady=2)
+                 ).pack(anchor="w", padx=14, pady=(3,0))
 
+        # ── Action buttons ─────────────────────────────────
+        tk.Frame(card, bg=BORDER, height=1).pack(fill="x", padx=14, pady=(14,0))
         bf = tk.Frame(card, bg=PANEL)
         bf.pack(fill="x", padx=14, pady=12)
         tk.Button(bf, text="✦  Calculate",
@@ -610,13 +647,14 @@ class App(tk.Tk):
                   command=self._calc).pack(fill="x")
         tk.Button(bf, text="Clear",
                   bg="#EBEBF5", fg=DIM, font=("Segoe UI",9),
-                  relief="flat", cursor="hand2", pady=5,
-                  command=self._clear).pack(fill="x", pady=5)
+                  relief="flat", cursor="hand2", pady=6,
+                  command=self._clear).pack(fill="x", pady=(6,0))
 
+        # ── Error label ────────────────────────────────────
         self.v_err = tk.StringVar()
         tk.Label(card, textvariable=self.v_err, bg=PANEL, fg=RED,
                  font=("Segoe UI",9), wraplength=260, justify="left"
-                 ).pack(anchor="w", padx=14, pady=6)
+                 ).pack(anchor="w", padx=14, pady=(0,8))
 
         # Quick examples
         card2 = self._card(parent)
